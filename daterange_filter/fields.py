@@ -23,7 +23,8 @@ class DateRangeField(models.DateField):
 
     def get_prep_lookup(self, lookup_type, value):
         try:
-            super(DateRangeField, self).get_prep_lookup(lookup_type, value)
+            return super(DateRangeField, self).get_prep_lookup(lookup_type,
+                                                               value)
         except exceptions.ValidationError, e:
             if isinstance(value, basestring):
                 for format in settings.DATE_INPUT_FORMATS:
@@ -39,7 +40,8 @@ class DateTimeRangeField(models.DateTimeField):
 
     def get_prep_lookup(self, lookup_type, value):
         try:
-            super(DateTimeRangeField, self).get_prep_lookup(lookup_type, value)
+            return super(DateTimeRangeField, self).get_prep_lookup(lookup_type,
+                                                                   value)
         except exceptions.ValidationError, e:
             if isinstance(value, basestring):
                 for format in settings.DATETIME_INPUT_FORMATS:
