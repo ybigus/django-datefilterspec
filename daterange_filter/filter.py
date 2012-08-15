@@ -33,17 +33,17 @@ class DateForm(forms.Form):
 
 class DateFilterSpec(admin.filters.DateFieldListFilter):
 
-    def __init__(self, f, request, params, model, model_admin, **kwargs):
+    def __init__(self, f, request, params, model, model_admin, field_path):
         super(DateFilterSpec, self).__init__(f, request, params, model,
-                                                   model_admin, **kwargs)
-        self.field_generic = '%s__' % self.field.name
+                                             model_admin, field_path)
+        self.field_generic = '%s__' % field_path
         self.title = self._title()
 
     def choices(self, cl):
         return [('A', 'B'),]
 
     def _title(self):
-        form = DateForm(initial=self.date_params, field_name=self.field.name)
+        form = DateForm(initial=self.date_params, field_name=self.field_path)
         out =  u"""%(field_name)s
         <style>
             .calendarbox {
