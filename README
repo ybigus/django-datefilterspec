@@ -1,4 +1,4 @@
-django-datefilterspec
+django-daterange-filter
 =====================
 
 Add the option to filter by a custom date range on the admin. This allows
@@ -9,7 +9,7 @@ See datefilter.png of a screenshot of how this is seen on the admin.
 **IMPORTANT:** this will work with Django 1.4. I won't work with previous Django
 versions.
 
-Instalation
+Installation
 -----------
 
 Use pip/easy_install
@@ -17,26 +17,17 @@ Use pip/easy_install
     pip install django-daterange-filter
 
 
-In your *models.py*
+Add daterange_filter to settings.INSTALLED_APPS. Then configure your admin:
 
-    from daterange_filter.fields import DateRangeField
+	from daterange_filter.filter import DateRangeFilter
 
-    class Example(models.Model):
-        
-        bar = DateRangeField(null=True, blank=True, etc...)
-        bar.daterange_filter = True
+	...
+
+    list_filter = (
+	    ...
+		('created', DateRangeFilter),
+		...
+	)
 
 
-It is important to use DateRangeField and not to use 
-*django.db.models.DateField*, becuase the Django class doesn't acept any other
-format than %m/%d/%yy. Because of this, it won't work if you are using a custom
-date format on the *settings.py*. On the other hand, DateRangeField will allow
-the custom DATE_INPUT_FORMATS defined on the *settings.py*.
-
-See http://stackoverflow.com/questions/10973748/django-model-datefield-to-python
-
-In you *admin.py* file import the filter. This is the only line that should
-be used for doing that:
-
-    from daterange_filter import filter
-
+DateRangeFilter honours localization and supports local date formats for filtering.
