@@ -17,7 +17,7 @@ Use pip/easy_install
     pip install django-daterange-filter
 
 
-Add daterange_filter to settings.INSTALLED_APPS. Then configure your admin:
+Add daterange_filter to settings.INSTALLED_APPS. Then configure your admin::
 
     from daterange_filter.filter import DateRangeFilter
 
