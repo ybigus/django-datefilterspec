@@ -31,3 +31,13 @@ Add daterange_filter to settings.INSTALLED_APPS. Then configure your admin:
 
 
 DateRangeFilter honours localization and supports local date formats for filtering.
+
+
+Changes 
+-------
+
+0.1.1:
+
+* Removed the custom DateRangeField
+* Improved i18n
+* Special thanks to: https://github.com/DXist
