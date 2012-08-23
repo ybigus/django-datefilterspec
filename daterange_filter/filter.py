@@ -61,4 +61,4 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
 # register the filter
 admin.filters.FieldListFilter.register(
-    lambda f: isinstance(f, models.DateField), DateRangeFilter, True)
+    lambda f: isinstance(f, models.DateField), DateRangeFilter)
