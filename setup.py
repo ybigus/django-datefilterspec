@@ -14,7 +14,6 @@ setup(
     ],
     install_requires=[
         "Django",
-        "South",
     ],
     packages=find_packages(),
     include_package_data=True,
