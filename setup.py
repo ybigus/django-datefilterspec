@@ -4,7 +4,7 @@ setup(
     name='django-daterange-filter',
     version='0.1.1',
     description='Allow to filter by a custom date range on the Django Admin',
-    long_description=open('README').read(-1),
+    long_description=open('README.rst').read(-1),
     author='Tomas Zulberti',
     author_email='tzulberti@gmail.com',
     url='http://github.com/tzulberti/django-datefilterspec',
