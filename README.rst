@@ -66,6 +66,7 @@ Changes
 0.2.0:
 
 * Updated README
+* Works with DateTime (special thanks to Andrea Rabbaglietti)
 
 0.1.1:
 
