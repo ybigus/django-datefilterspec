@@ -10,6 +10,7 @@ from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime
 from django.db import models
 from django.utils.translation import ugettext as _
+import datetime
 
 
 class DateRangeForm(forms.Form):
@@ -59,7 +60,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
     def expected_parameters(self):
         return [self.lookup_kwarg_since, self.lookup_kwarg_upto]
 
-    def get_form(self, request):
+    def get_form(self, request): 
         return DateRangeForm(data=self.used_parameters,
                              field_name=self.field_path)
 
@@ -68,6 +69,8 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             # get no null params
             filter_params = dict(filter(lambda x: bool(x[1]),
                                         self.form.cleaned_data.items()))
+            if self.lookup_kwarg_upto in filter_params:
+                filter_params[self.lookup_kwarg_upto] = filter_params[self.lookup_kwarg_upto] + datetime.timedelta(days=1)
             return queryset.filter(**filter_params)
         else:
             return queryset
