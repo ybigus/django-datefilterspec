@@ -28,6 +28,14 @@ class DateRangeForm(forms.Form):
             label='', widget=AdminDateWidget(
                 attrs={'placeholder': _('To date')}), localize=True,
             required=False)
+        
+        #copy params
+        data = kwargs['data']
+        for key in data.keys():
+            if (key.endswith('__lte') or key.endswith('__gte')) and not key.startswith(field_name):
+                self.fields[key] = forms.DateField(label='', widget=forms.HiddenInput(attrs={'id':'%s_%s'%(key, field_name)}),required=False)
+            if not key.endswith('__lte') and not key.endswith('__gte'):
+                self.fields[key] = forms.CharField(widget=forms.HiddenInput,required=False)
 
 
 class DateTimeRangeForm(forms.Form):
@@ -42,6 +50,14 @@ class DateTimeRangeForm(forms.Form):
                                 ),
                                 localize=True,
                                 required=False)
+        
+        #copy params
+        data = kwargs['data']
+        for key in data.keys():
+            if (key.endswith('__lte') or key.endswith('__gte')) and not key.startswith(field_name):
+                self.fields[key] = forms.DateField(label='', widget=forms.HiddenInput(attrs={'id':'%s_%s'%(key, field_name)}),required=False)
+            if not key.endswith('__lte') and not key.endswith('__gte'):
+                self.fields[key] = forms.CharField(widget=forms.HiddenInput,required=False)
 
 
 class DateRangeFilter(admin.filters.FieldListFilter):
@@ -60,17 +76,20 @@ class DateRangeFilter(admin.filters.FieldListFilter):
     def expected_parameters(self):
         return [self.lookup_kwarg_since, self.lookup_kwarg_upto]
 
-    def get_form(self, request): 
+    def get_form(self, request):
+        for k,v in request.GET.iterlists():
+            self.used_parameters[k] = v[0]
         return DateRangeForm(data=self.used_parameters,
                              field_name=self.field_path)
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
             # get no null params
-            filter_params = dict(filter(lambda x: bool(x[1]),
+            filter_params = dict(filter(lambda x: (x[0].endswith('__lte') or x[0].endswith('__gte')) and bool(x[1]),
                                         self.form.cleaned_data.items()))
-            if self.lookup_kwarg_upto in filter_params:
-                filter_params[self.lookup_kwarg_upto] = filter_params[self.lookup_kwarg_upto] + datetime.timedelta(days=1)
+            for p in filter_params.keys():
+                if p.endswith('__lte'):
+                    filter_params[p] = filter_params[p] + datetime.timedelta(days=1)
             return queryset.filter(**filter_params)
         else:
             return queryset
@@ -93,13 +112,15 @@ class DateTimeRangeFilter(admin.filters.FieldListFilter):
         return [self.lookup_kwarg_since, self.lookup_kwarg_upto]
 
     def get_form(self, request):
+        for k,v in request.GET.iterlists():
+            self.used_parameters[k] = v[0]
         return DateTimeRangeForm(data=self.used_parameters,
                                  field_name=self.field_path)
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
             # get no null params
-            filter_params = dict(filter(lambda x: bool(x[1]),
+            filter_params = dict(filter(lambda x: (x[0].endswith('__lte') or x[0].endswith('__gte')) and bool(x[1]),
                                         self.form.cleaned_data.items()))
             return queryset.filter(**filter_params)
         else:

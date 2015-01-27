@@ -12,6 +12,16 @@
         font-size: 8pt;
     }
 </style>
+<script type="text/javascript">
+    $(document).ready(function(){
+       $('input[name="reset"]').click(function(e){
+           e.preventDefult();
+           var form = $(this).parents('form');
+           form.find('.hasDatepicker').val('');
+           form.submit();
+       }) 
+    });
+</script>
 <form method="GET" action="">
     {{ spec.form.media }}
     {{ spec.form.as_p }}
