@@ -11,17 +11,14 @@
         /* Make text for "Today" a bit smaller so it appears on one line. */
         font-size: 8pt;
     }
+    body p.datetime input.vTimeField, body p.datetime input.vDateField{
+        width: 105px !important;
+        padding-right: 3px !important;
+    }
+    #ui-timepicker{
+        z-index: 999 !important;
+    }
 </style>
-<script type="text/javascript">
-    $(document).ready(function(){
-       $('input[name="reset"]').click(function(e){
-           e.preventDefult();
-           var form = $(this).parents('form');
-           form.find('.hasDatepicker').val('');
-           form.submit();
-       }) 
-    });
-</script>
 <form method="GET" action="">
     {{ spec.form.media }}
     {{ spec.form.as_p }}

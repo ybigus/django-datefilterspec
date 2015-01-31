@@ -11,6 +11,14 @@ from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime
 from django.db import models
 from django.utils.translation import ugettext as _
 import datetime
+from django.utils.html import format_html
+
+
+class AdminSplitDateTimeTextless(AdminSplitDateTime):
+    def format_output(self, rendered_widgets):
+        return format_html('<p class="datetime">{0} {1}<br />{2} {3}</p>',
+                           '', rendered_widgets[0],
+                           '', rendered_widgets[1])
 
 
 class DateRangeForm(forms.Form):
@@ -45,8 +53,16 @@ class DateTimeRangeForm(forms.Form):
         super(DateTimeRangeForm, self).__init__(*args, **kwargs)
         self.fields['%s__gte' % field_name] = forms.DateTimeField(
                                 label='',
-                                widget=AdminSplitDateTime(
+                                widget=AdminSplitDateTimeTextless(
                                     attrs={'placeholder': _('From Date')}
+                                ),
+                                localize=True,
+                                required=False)
+        
+        self.fields['%s__lte' % field_name] = forms.DateTimeField(
+                                label='',
+                                widget=AdminSplitDateTimeTextless(
+                                    attrs={'placeholder': _('To Date')}
                                 ),
                                 localize=True,
                                 required=False)
@@ -54,9 +70,9 @@ class DateTimeRangeForm(forms.Form):
         #copy params
         data = kwargs['data']
         for key in data.keys():
-            if (key.endswith('__lte') or key.endswith('__gte')) and not key.startswith(field_name):
+            if ('__lte' in key or '__gte' in key) and not key.startswith(field_name):
                 self.fields[key] = forms.DateField(label='', widget=forms.HiddenInput(attrs={'id':'%s_%s'%(key, field_name)}),required=False)
-            if not key.endswith('__lte') and not key.endswith('__gte'):
+            if not '__lte' in key and not '__gte' in key:
                 self.fields[key] = forms.CharField(widget=forms.HiddenInput,required=False)
 
 
@@ -120,7 +136,7 @@ class DateTimeRangeFilter(admin.filters.FieldListFilter):
     def queryset(self, request, queryset):
         if self.form.is_valid():
             # get no null params
-            filter_params = dict(filter(lambda x: (x[0].endswith('__lte') or x[0].endswith('__gte')) and bool(x[1]),
+            filter_params = dict(filter(lambda x: ('__lte' in x[0] or '__gte' in x[0]) and bool(x[1]),
                                         self.form.cleaned_data.items()))
             return queryset.filter(**filter_params)
         else:
